@@ -6,36 +6,7 @@ Use `Node.js`, `Express` and `Knex` to build an API with authentication and auth
 
 ## Instructions
 
-### Task 1: Project Setup
-
-There are two possible ways to submit your project. Your instructor should have communicated which method to use for this project during the Guided Project and in your cohort's Slack channel. If you are still unsure, reach out to Lambda Staff.
-
-#### Option A - Codegrade
-
-- [ ] Fork and clone the repository.
-- [ ] Open the assignment in Canvas and click on the "Set up git" option.
-- [ ] Follow instructions to set up Codegrade's Webhook and Deploy Key.
-- [ ] Push your first commit: `git commit --allow-empty -m "first commit" && git push`.
-- [ ] Check to see that Codegrade has accepted your git submission.
-
-#### Option B - Pull Request
-
-- [ ] Fork and clone the repository.
-- [ ] Implement your project in a `firstname-lastname` branch.
-- [ ] Create a pull request of `firstname-lastname` against your `main` branch.
-- [ ] Open the assignment in Canvas and submit your pull request.
-
-### Task 2: Minimum Viable Product
-
-You will complete the following tasks and do any extra wiring and package installation necessary for the app to compile and pass all tests.
-
-#### 2A - Database Access Functions
-
-Write the following user access functions inside `api/users/users-model.js`:
-
-- [ ] `find`
-- [ ] `findBy`
-- [ ] `findById`
+### Task 1: Minimum Viable Product
 
 #### 2B - Middleware Functions
 
@@ -90,6 +61,6 @@ Complete the `secrets/index.js` file.
 - Schedule time to review, refine, and assess your work.
 - Perform basic professional polishing including spell-checking and grammar-checking on your work.
 
-### Task 3: Stretch Goals
+### Task 2: Stretch Goals
 
 - Build a React application that implements components to register, login and view a list of users. Gotta keep sharpening your React skills.
