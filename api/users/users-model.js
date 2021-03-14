@@ -1,23 +1,23 @@
-const db = require('../../data/db-config.js');
+const db = require("../../data/db-config.js");
 
 function find() {
-  return db('users as u')
-    .innerJoin('roles as r', 'r.role_id', 'u.role_id')
-    .select('u.user_id', 'u.username', 'r.role_name as role');
+  return db("users as u")
+    .innerJoin("roles as r", "r.role_id", "u.role_id")
+    .select("u.user_id", "u.username", "r.role_name as role");
 }
 
 function findById(user_id) {
-  return db('users as u')
-    .innerJoin('roles as r', 'r.role_id', 'u.role_id')
-    .where('u.user_id', user_id)
-    .first('u.user_id', 'u.username', 'r.role_name as role');
+  return db("users as u")
+    .innerJoin("roles as r", "r.role_id", "u.role_id")
+    .where("u.user_id", user_id)
+    .first("u.user_id", "u.username", "r.role_name as role");
 }
 
-function findBy(filter) {
-  return db('users as u')
-    .innerJoin('roles as r', 'r.role_id', 'u.role_id')
-    .where(filter)
-    .first('u.user_id', 'u.username', 'r.role_name as role');
+function findBy(username) {
+  return db("users as u")
+    .innerJoin("roles as r", "r.role_id", "u.role_id")
+    .where("u.username", username)
+    .first("u.user_id", "u.username", "r.role_name as role");
 }
 
 /**
@@ -43,14 +43,14 @@ async function add({ username, password, role_name }) {
   let created_user_id;
   await db.transaction(async (trx) => {
     let role_id_to_use;
-    const [role] = await trx('roles').where('role_name', role_name);
+    const [role] = await trx("roles").where("role_name", role_name);
     if (role) {
       role_id_to_use = role.role_id;
     } else {
-      const [role_id] = await trx('roles').insert({ role_name: role_name });
+      const [role_id] = await trx("roles").insert({ role_name: role_name });
       role_id_to_use = role_id;
     }
-    const [user_id] = await trx('users').insert({
+    const [user_id] = await trx("users").insert({
       username,
       password,
       role_id: role_id_to_use,
