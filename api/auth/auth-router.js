@@ -18,12 +18,12 @@ const { jwtSecret } = require("../secrets/index"); // use this secret!
    */
 
 router.post("/register", validateRoleName, (req, res, next) => {
-  const { username, password, role_name } = req.body;
+  const { username, password } = req.body;
 
   Users.add({
     username,
     password: bcrypt.hash(password, 20),
-    role_name,
+    role_name: req.roleName,
   })
     .then((newUser) => {
       res.status(201).json({ newUser: newUser });
@@ -53,19 +53,20 @@ router.post("/register", validateRoleName, (req, res, next) => {
     }
    */
 router.post("/login", checkUsernameExists, async (req, res, next) => {
+  console.log("req.user: ", req.user);
   try {
     const token = jwt.sign(
       {
-        subject: req.user.id,
+        subject: req.user.user_id,
         username: req.user.username,
-        role_name: req.user.role_name,
+        role_name: req.user.role,
       },
       jwtSecret,
       {
-        expiresIn: "24h",
+        expiresIn: "24 hours",
       }
     );
-    res.cookie("chocolatechipCookie", token);
+
     res.status(200).json({
       message: `${req.user.username} is back!!`,
       token: token,

@@ -5,7 +5,7 @@ const cookieParser = require("cookie-parser");
 
 const server = express();
 
-const authRouter = require("./auth/auth-router.js");
+const authRouter = require("./auth/auth-router");
 const usersRouter = require("./users/users-router");
 
 server.use(helmet());
