@@ -1,8 +1,17 @@
 const router = require("express").Router();
-const { checkUsernameExists, validateRoleName } = require('./auth-middleware');
-const { JWT_SECRET } = require("../secrets"); // use this secret!
+const User = require("../users/users-model");
+const { checkUsernameExists, validateRoleName } = require("./auth-middleware");
+const jwt = require("jsonwebtoken");
 
-router.post("/register", validateRoleName, (req, res, next) => {
+// validateRoleName,
+router.post("/register", validateRoleName, async (req, res, next) => {
+  console.log(req.body);
+  User.add({ ...req.body, role_name: req.role_name })
+    .then((newUser) => {
+      res.status(200).json(newUser);
+    })
+    .catch(next);
+
   /**
     [POST] /api/auth/register { "username": "anna", "password": "1234", "role_name": "angel" }
 
@@ -16,11 +25,22 @@ router.post("/register", validateRoleName, (req, res, next) => {
    */
 });
 
-
 router.post("/login", checkUsernameExists, (req, res, next) => {
+  const UserAuth = req.body;
+
+  const token = jwt.sign(
+    {
+      username: UserAuth.username,
+      user_role: UserAuth.role_name,
+    },
+    process.env.JWT_SECRET
+  );
+  res.cookies = token;
+  res.cookie("token", token);
+  res.status(200).json({ message: "sue is back!", token: token });
+
   /**
     [POST] /api/auth/login { "username": "sue", "password": "1234" }
-
     response:
     status 200
     {
