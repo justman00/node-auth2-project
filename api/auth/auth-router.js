@@ -1,9 +1,11 @@
 const router = require("express").Router();
-const { checkUsernameExists, validateRoleName } = require('./auth-middleware');
-const { JWT_SECRET } = require("../secrets"); // use this secret!
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const Users = require("../users/users-model");
+const { checkUsernameExists, validateRoleName } = require("./auth-middleware");
+const { jwtSecret } = require("../secrets/index"); // use this secret!
 
-router.post("/register", validateRoleName, (req, res, next) => {
-  /**
+/**
     [POST] /api/auth/register { "username": "anna", "password": "1234", "role_name": "angel" }
 
     response:
@@ -14,11 +16,24 @@ router.post("/register", validateRoleName, (req, res, next) => {
       "role_name": "angel"
     }
    */
+
+router.post("/register", validateRoleName, (req, res, next) => {
+  const { username, password } = req.body;
+
+  Users.add({
+    username,
+    password: bcrypt.hash(password, 20),
+    role_name: req.roleName,
+  })
+    .then((newUser) => {
+      res.status(201).json({ newUser: newUser });
+    })
+    .catch((err) => {
+      next(err);
+    });
 });
 
-
-router.post("/login", checkUsernameExists, (req, res, next) => {
-  /**
+/**
     [POST] /api/auth/login { "username": "sue", "password": "1234" }
 
     response:
@@ -37,6 +52,28 @@ router.post("/login", checkUsernameExists, (req, res, next) => {
       "role_name": "admin" // the role of the authenticated user
     }
    */
+router.post("/login", checkUsernameExists, async (req, res, next) => {
+  console.log("req.user: ", req.user);
+  try {
+    const token = jwt.sign(
+      {
+        subject: req.user.user_id,
+        username: req.user.username,
+        role_name: req.user.role,
+      },
+      jwtSecret,
+      {
+        expiresIn: "24 hours",
+      }
+    );
+
+    res.status(200).json({
+      message: `${req.user.username} is back!!`,
+      token: token,
+    });
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = router;
